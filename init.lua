@@ -2,6 +2,9 @@
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
+-- enable clipboard
+vim.opt.clipboard = "unnamedplus"
+
 -- optionally enable 24-bit colour
 vim.opt.termguicolors = true
 
