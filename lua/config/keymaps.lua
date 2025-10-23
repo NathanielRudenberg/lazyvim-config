@@ -6,6 +6,19 @@ local map = vim.keymap.set
 
 -- Enter normal mode
 map("t", "<Esc><Esc>", "<C-\\><C-n>", { noremap = true, silent = true })
-map("n", "<leader>gg", ":Neogit<cr>", { desc = "Neogit (root)", noremap = true, silent = true })
-map("n", "<leader>gG", ":Neogit cwd=<cwd><cr>", { desc = "Neogit (cwd)", noremap = true, silent = true })
-map("n", "<leader><C-S>s", ":Store<cr>", { desc = "Open Plugin Store", noremap = true, silent = true })
+
+-- Neogit
+map("n", "<leader>gg", "<cmd>Neogit<cr>", { desc = "Neogit (root)", noremap = true, silent = true })
+map("n", "<leader>gG", "<cmd>Neogit cwd=<cwd><cr>", { desc = "Neogit (cwd)", noremap = true, silent = true })
+
+-- Plugin store
+map("n", "<leader><C-S>s", "<cmd>Store<cr>", { desc = "Open Plugin Store", noremap = true, silent = true })
+
+-- Diffview
+map("n", "<leader>gd", function()
+  if next(require("diffview.lib").views) == nil then
+    vim.cmd("DiffviewOpen")
+  else
+    vim.cmd("DiffviewClose")
+  end
+end, { desc = "Open Diffview" })
