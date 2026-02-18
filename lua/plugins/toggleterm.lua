@@ -7,6 +7,13 @@ return {
     opts = {
       open_mapping = [[<F4>]],
       direction = "horizontal",
+      size = function(term)
+        if term.direction == "horizontal" then
+          return 20 -- Set default height for horizontal splits
+        elseif term.direction == "vertical" then
+          return 80 -- Set default width for vertical splits
+        end
+      end,
       shade_filetypes = {},
       shade_terminals = true,
       hide_numbers = false,
