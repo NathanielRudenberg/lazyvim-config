@@ -12,7 +12,7 @@ map("n", "<leader>gg", "<cmd>Neogit<cr>", { desc = "Neogit (root)", noremap = tr
 map("n", "<leader>gG", "<cmd>Neogit cwd=<cwd><cr>", { desc = "Neogit (cwd)", noremap = true, silent = true })
 
 -- Plugin store
-map("n", "<leader><C-S>s", "<cmd>Store<cr>", { desc = "Open Plugin Store", noremap = true, silent = true })
+-- map("n", "<leader><C-S>s", "<cmd>Store<cr>", { desc = "Open Plugin Store", noremap = true, silent = true })
 
 -- Diffview
 map("n", "<leader>gd", function()
