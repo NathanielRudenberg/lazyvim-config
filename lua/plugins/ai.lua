@@ -3,10 +3,11 @@ return {
     "milanglacier/minuet-ai.nvim",
     config = function()
       require("minuet").setup({
+        trigger_debounce = 250,
         virtualtext = {
-          auto_trigger = true,
+          auto_trigger_ft = { "*" },
           keymap = {
-            accept = "<Tab>",
+            accept = "<M-a>",
             accept_line = "<M-l>",
             prev = "<M-[>", -- Cycle to previous suggestion
             next = "<M-]>", -- Cycle to next suggestion
@@ -227,7 +228,10 @@ GENERAL BEHAVIOR
           },
         },
         inline = {
-          adapter = "gemini",
+          adapter = {
+            name = "gemini",
+            model = "gemini-2.5-pro",
+          },
           keymaps = {
             accept_change = { modes = { n = "gda" }, description = "Accept Diff" },
             reject_change = { modes = { n = "gdr" }, description = "Reject Diff" },
