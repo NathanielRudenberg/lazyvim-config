@@ -1,9 +1,31 @@
+local AI_MODEL_CHAT = "gemini-3-flash-preview"
+local AI_MODEL_AUTOCOMPLETE = "gemini-2.5-flash-lite"
+
+-- OpenRouter models
+local OR_MODEL_MIMO = "xiaomi/mimo-v2-flash"
+local OR_MODEL_QWEN_LOGIC = "qwen/qwen3.5-397b-a17b"
+local OR_MODEL_QWEN_THINKING = "qwen/qwen3-max-thinking"
+
+local function openrouter_adapter(name, model)
+  return require("codecompanion.adapters").extend("openai_compatible", {
+    formatted_name = name,
+    env = {
+      url = "https://openrouter.ai/api",
+      api_key = "OPENROUTER_API_KEY",
+      chat_url = "/v1/chat/completions",
+    },
+    schema = {
+      model = { default = model, choices = { model } },
+    },
+  })
+end
+
 return {
   {
     "milanglacier/minuet-ai.nvim",
     config = function()
       require("minuet").setup({
-        trigger_debounce = 250,
+        trigger_debounce = 1000,
         virtualtext = {
           auto_trigger_ft = { "*" },
           keymap = {
@@ -14,10 +36,26 @@ return {
             dismiss = "<M-e>", -- Dismiss the suggestion
           },
         },
-        provider = "gemini",
+        provider = "openai_compatible",
         provider_options = {
+          openai_compatible = {
+            model = OR_MODEL_MIMO,
+            end_point = "https://openrouter.ai/api/v1/chat/completions",
+            api_key = "OPENROUTER_API_KEY",
+            name = "OpenRouter",
+            stream = true,
+            optional = {
+              max_tokens = 160,
+              temperature = 0.15,
+              top_p = 0.9,
+              stop = {
+                "\n\n",
+                "```",
+              },
+            },
+          },
           gemini = {
-            model = "gemini-2.0-flash",
+            model = AI_MODEL_AUTOCOMPLETE,
             stream = true,
             optional = {
               generationConfig = {
@@ -73,10 +111,10 @@ return {
           },
         },
         chat = {
-          show_settings = true,
+          -- show_settings = true,
           show_token_count = true, -- Shows tokens as they generate
           show_tools_processing = true, -- Shows a "Loading..." message when tools run
-          render_headers = true, -- Cleaner UI
+          render_headers = true,
           icons = {
             chat_context = "📎️", -- You can also apply an icon to the fold
             tool_pending = "⏳ ",
@@ -94,13 +132,11 @@ return {
           },
         },
         chat = {
-          adapter = {
-            name = "gemini",
-            model = "gemini-2.5-pro",
-          },
+          adapter = "Qwen Logic",
           roles = {
             llm = function(adapter)
-              return "AI (" .. adapter.formatted_name .. ")"
+              local name = (adapter and adapter.formatted_name) or "AI"
+              return "AI (" .. name .. ")"
             end,
             user = "Me",
           },
@@ -228,10 +264,7 @@ GENERAL BEHAVIOR
           },
         },
         inline = {
-          adapter = {
-            name = "gemini",
-            model = "gemini-2.5-pro",
-          },
+          adapter = "MiMo",
           keymaps = {
             accept_change = { modes = { n = "gda" }, description = "Accept Diff" },
             reject_change = { modes = { n = "gdr" }, description = "Reject Diff" },
@@ -239,27 +272,44 @@ GENERAL BEHAVIOR
         },
       },
       adapters = {
-        gemini = function()
-          return require("codecompanion.adapters").extend("gemini", {
-            env = { api_key = "GEMINI_API_KEY" },
-            opts = {
-              stream = true,
-              tools = true,
-            },
-            schema = {
-              model = {
-                default = "gemini-2.5-pro",
+        http = {
+          opts = {
+            show_presets = false,
+          },
+          ["Gemini"] = function()
+            return require("codecompanion.adapters").extend("gemini", {
+              env = { api_key = "GEMINI_API_KEY" },
+              opts = {
+                stream = true,
+                tools = true,
               },
-              -- Optimization: Increase tokens for longer chat responses
-              max_tokens = {
-                default = 8192,
+              schema = {
+                model = {
+                  default = AI_MODEL_CHAT,
+                },
+                -- Optimization: Increase tokens for longer chat responses
+                max_tokens = {
+                  default = 8192,
+                },
+                temperature = {
+                  default = 0.2, -- Lower temperature = more precise code
+                },
               },
-              temperature = {
-                default = 0.2, -- Lower temperature = more precise code
-              },
-            },
-          })
-        end,
+            })
+          end,
+
+          ["MiMo"] = function()
+            return openrouter_adapter("MiMo", OR_MODEL_MIMO)
+          end,
+
+          ["Qwen Logic"] = function()
+            return openrouter_adapter("Qwen Logic", OR_MODEL_QWEN_LOGIC)
+          end,
+
+          ["Qwen Thinking"] = function()
+            return openrouter_adapter("Qwen Thinking", OR_MODEL_QWEN_THINKING)
+          end,
+        },
       },
     },
   },
