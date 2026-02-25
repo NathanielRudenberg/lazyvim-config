@@ -6,7 +6,8 @@ local OR_MODEL_MIMO = "xiaomi/mimo-v2-flash"
 local OR_MODEL_QWEN_LOGIC = "qwen/qwen3.5-397b-a17b"
 local OR_MODEL_QWEN_THINKING = "qwen/qwen3-max-thinking"
 local OR_MODEL_DEEPSEEK_LOGIC = "deepseek/deepseek-v3.2"
-local OR_MODEL_DEEPSEEK_THINK = "deepseek/deepseek-v3.2-speciale"
+local OR_MODEL_DEEPSEEK_THINK = "deepseek/deepseek-r1-0528"
+local OR_MODEL_MINIMAX_CODE = "minimax/minimax-m2.5"
 
 local function openrouter_adapter(name, model)
   return require("codecompanion.adapters").extend("openai_compatible", {
@@ -158,7 +159,7 @@ return {
           },
         },
         chat = {
-          adapter = "Qwen Logic",
+          adapter = "MiniMax",
           roles = {
             llm = function(adapter)
               local name = (adapter and adapter.formatted_name) or "AI"
@@ -327,6 +328,12 @@ GENERAL BEHAVIOR
                 temperature = {
                   default = 0.2, -- Lower temperature = more precise code
                 },
+                -- Enable reasoning with medium thinking budget
+                thinkingConfig = {
+                  default = {
+                    thinkingBudget = 1536, -- Medium budget (balances speed and depth)
+                  },
+                },
               },
             })
           end,
@@ -349,6 +356,10 @@ GENERAL BEHAVIOR
 
           ["DeepSeek Thinking"] = function()
             return openrouter_adapter("DeepSeek Thinking", OR_MODEL_DEEPSEEK_THINK)
+          end,
+
+          ["MiniMax"] = function()
+            return openrouter_adapter("MiniMax", OR_MODEL_MINIMAX_CODE)
           end,
         },
       },
