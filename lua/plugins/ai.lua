@@ -5,6 +5,8 @@ local AI_MODEL_AUTOCOMPLETE = "gemini-2.5-flash-lite"
 local OR_MODEL_MIMO = "xiaomi/mimo-v2-flash"
 local OR_MODEL_QWEN_LOGIC = "qwen/qwen3.5-397b-a17b"
 local OR_MODEL_QWEN_THINKING = "qwen/qwen3-max-thinking"
+local OR_MODEL_DEEPSEEK_LOGIC = "deepseek/deepseek-v3.2"
+local OR_MODEL_DEEPSEEK_THINK = "deepseek/deepseek-v3.2-speciale"
 
 local function openrouter_adapter(name, model)
   return require("codecompanion.adapters").extend("openai_compatible", {
@@ -112,6 +114,8 @@ return {
         },
         chat = {
           -- show_settings = true,
+          show_reasoning = true,
+          fold_reasoning = true,
           show_token_count = true, -- Shows tokens as they generate
           show_tools_processing = true, -- Shows a "Loading..." message when tools run
           render_headers = true,
@@ -200,6 +204,12 @@ return {
                 .. [[
 
 ========================
+CRITICAL: LANGUAGE RULE
+========================
+- You MUST always respond in English.
+- Even if the code contains comments in other languages, your explanations and chat responses must be English.
+
+========================
 CRITICAL TOOL RULES
 ========================
 
@@ -256,6 +266,7 @@ GENERAL BEHAVIOR
 - Prefer structured tools over shell commands.
 - Think step-by-step before calling tools.
 - Plan edits before executing them.
+- Do NOT create new files without asking me first.
 - Do not guess line numbers.
 - If uncertain, read the file first.
 
@@ -308,6 +319,14 @@ GENERAL BEHAVIOR
 
           ["Qwen Thinking"] = function()
             return openrouter_adapter("Qwen Thinking", OR_MODEL_QWEN_THINKING)
+          end,
+
+          ["DeepSeek Logic"] = function()
+            return openrouter_adapter("DeepSeek Logic", OR_MODEL_DEEPSEEK_LOGIC)
+          end,
+
+          ["DeepSeek Thinking"] = function()
+            return openrouter_adapter("DeepSeek Thinking", OR_MODEL_DEEPSEEK_THINK)
           end,
         },
       },
