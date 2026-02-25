@@ -16,6 +16,28 @@ local function openrouter_adapter(name, model)
       api_key = "OPENROUTER_API_KEY",
       chat_url = "/v1/chat/completions",
     },
+    handlers = {
+      -- This handler is required to extract the non-standard "reasoning" field
+      -- per the CodeCompanion documentation.
+      parse_message_meta = function(self, data)
+        if data.extra then
+          -- OpenRouter might send 'reasoning' or 'reasoning_content' depending on the model
+          local content = data.extra.reasoning or data.extra.reasoning_content
+
+          if content then
+            data.output.reasoning = {
+              content = content,
+            }
+            -- If the main content is empty while reasoning, set it to nil
+            -- so the chat buffer waits to render the main response
+            if data.output.content == "" then
+              data.output.content = nil
+            end
+          end
+        end
+        return data
+      end,
+    },
     schema = {
       model = { default = model, choices = { model } },
     },
