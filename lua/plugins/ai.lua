@@ -50,9 +50,13 @@ return {
     "milanglacier/minuet-ai.nvim",
     config = function()
       require("minuet").setup({
-        trigger_debounce = 1000,
+        throttle = 1000,
+        trigger_debounce = 400,
+        blink = {
+          enable_auto_complete = true,
+        },
         virtualtext = {
-          auto_trigger_ft = { "*" },
+          auto_trigger_ft = {},
           keymap = {
             accept = "<M-a>",
             accept_line = "<M-l>",
@@ -121,7 +125,7 @@ return {
       display = {
         diff = {
           enabled = true,
-          provider = "inline",
+          provider = "mini_diff",
           provider_opts = {
             inline = {
               layout = "float",
@@ -193,7 +197,7 @@ return {
             ["create_file"] = {
               opts = {
                 -- False = Let it generate the file content immediately
-                require_approval_before = false,
+                require_approval_before = true,
                 -- True = Show me the buffer with the new code so I can approve saving it
                 require_confirmation_after = true,
               },
