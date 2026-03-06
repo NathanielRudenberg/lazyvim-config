@@ -15,3 +15,6 @@ vim.cmd("highlight LeapBackdrop guifg=#777777")
 vim.g.vimtex_compiler_out_dir = "./build"
 
 vim.o.wrap = true
+
+-- Use Intelephense instead of Phpactor
+vim.g.lazyvim_php_lsp = "intelephense"
