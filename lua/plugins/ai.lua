@@ -7,6 +7,7 @@ local OR_MODEL_QWEN_LOGIC = "qwen/qwen3.5-397b-a17b"
 local OR_MODEL_QWEN_THINKING = "qwen/qwen3-max-thinking"
 local OR_MODEL_DEEPSEEK_LOGIC = "deepseek/deepseek-v3.2"
 local OR_MODEL_DEEPSEEK_THINK = "deepseek/deepseek-r1-0528"
+local OR_MODEL_DEEPSEEK_CODE = "deepseek/deepseek-chat-v2.5"
 local OR_MODEL_MINIMAX_CODE = "minimax/minimax-m2.5"
 
 local function openrouter_adapter(name, model)
@@ -50,49 +51,47 @@ return {
     "milanglacier/minuet-ai.nvim",
     config = function()
       require("minuet").setup({
-        throttle = 1000,
-        trigger_debounce = 400,
+        provider = "codestral",
+        n_completions = 1,
+        add_single_line_entry = true,
+
+        throttle = 400,
+        debounce = 200,
+        request_timeout = 2,
+
+        context_ratio = 0.85,
+        after_cursor_filter_length = 20,
+        before_cursor_filter_length = 3,
+
         blink = {
           enable_auto_complete = true,
         },
-        virtualtext = {
-          auto_trigger_ft = {},
-          keymap = {
-            accept = "<M-a>",
-            accept_line = "<M-l>",
-            prev = "<M-[>", -- Cycle to previous suggestion
-            next = "<M-]>", -- Cycle to next suggestion
-            dismiss = "<M-e>", -- Dismiss the suggestion
-          },
-        },
-        provider = "openai_compatible",
+
         provider_options = {
           openai_compatible = {
-            model = OR_MODEL_MIMO,
+            model = OR_MODEL_DEEPSEEK_CODE, -- example
             end_point = "https://openrouter.ai/api/v1/chat/completions",
             api_key = "OPENROUTER_API_KEY",
             name = "OpenRouter",
             stream = true,
             optional = {
-              max_tokens = 160,
-              temperature = 0.15,
+              max_tokens = 64,
+              temperature = 0.1,
               top_p = 0.9,
-              stop = {
-                "\n\n",
-                "```",
-              },
+              stop = nil,
             },
           },
-          gemini = {
-            model = AI_MODEL_AUTOCOMPLETE,
+          codestral = {
+            model = "codestral-latest",
+            end_point = "https://api.mistral.ai/v1/fim/completions",
+            api_key = "CODESTRAL_API_KEY",
+            name = "Codestral",
             stream = true,
             optional = {
-              generationConfig = {
-                maxOutputTokens = 256,
-                thinkingConfig = {
-                  thinkingBudget = 0,
-                },
-              },
+              max_tokens = 256,
+              temperature = 0.1,
+              top_p = 0.9,
+              stop = { "\n\n" },
             },
           },
         },
@@ -125,10 +124,11 @@ return {
       display = {
         diff = {
           enabled = true,
-          provider = "mini_diff",
+          -- provider = "mini_diff",
+          provider = "inline",
           provider_opts = {
             inline = {
-              layout = "float",
+              -- layout = "float",
               opts = {
                 context_lines = 3, -- Number of context lines in hunks
                 dim = 25, -- Background dim level for floating diff (0-100, [100 full transparent], only applies when layout = "float")
@@ -266,36 +266,6 @@ When reading project files:
 - Use `cmd_runner` only when absolutely necessary.
 - NEVER use destructive shell commands.
 - NEVER modify files via shell.
-
-========================
-EDITING STYLE RULES
-========================
-
-When modifying code:
-
-- Make minimal, surgical edits.
-- Modify only the necessary lines.
-- DO NOT rewrite entire files unless explicitly requested.
-- Preserve formatting and surrounding code.
-- Avoid large-scale refactors unless asked.
-- Keep edits localized to produce clean diff hunks.
-
-If editing multiple files:
-
-- Modify each file independently.
-- Only change what is necessary in each file.
-- Avoid broad rewrites across files.
-
-========================
-GENERAL BEHAVIOR
-========================
-
-- Prefer structured tools over shell commands.
-- Think step-by-step before calling tools.
-- Plan edits before executing them.
-- Do NOT create new files without asking me first.
-- Do not guess line numbers.
-- If uncertain, read the file first.
 
 ]]
             end,
