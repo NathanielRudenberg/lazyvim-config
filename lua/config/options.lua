@@ -8,9 +8,7 @@ vim.o.tabstop = 4
 vim.o.softtabstop = 4
 vim.o.shiftwidth = 4
 
-vim.opt.colorcolumn = "80" -- Highlight the 80th column
-
-vim.cmd("highlight LeapBackdrop guifg=#777777")
+-- vim.opt.colorcolumn = "80" -- Highlight the 80th column
 
 vim.g.vimtex_compiler_out_dir = "./build"
 
