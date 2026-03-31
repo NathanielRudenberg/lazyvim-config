@@ -1,9 +1,0 @@
-return {
-  { "martinsione/darkplus.nvim" },
-  {
-    "LazyVim/Lazyvim",
-    opts = {
-      --     colorscheme = "darkplus",
-    },
-  },
-}
