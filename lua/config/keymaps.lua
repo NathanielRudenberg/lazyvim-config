@@ -22,3 +22,11 @@ map("n", "<leader>gd", function()
     vim.cmd("DiffviewClose")
   end
 end, { desc = "Open Diffview" })
+
+-- Normal comment keymaps that make sense (overrides LazyVim's terminal launch command)
+map("n", "<C-/>", "gcc", { remap = true, desc = "Toggle Comment Line" })
+map("v", "<C-/>", "gc", { remap = true, desc = "Toggle Comment Selection" })
+
+-- I guess some terminals send <C-_> when pressing <C-/>
+map("n", "<C-_>", "gcc", { remap = true, desc = "Toggle Comment Line" })
+map("v", "<C-_>", "gc", { remap = true, desc = "Toggle Comment Selection" })
