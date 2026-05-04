@@ -49,6 +49,7 @@ end
 return {
   {
     "milanglacier/minuet-ai.nvim",
+    enabled = false,
     config = function()
       require("minuet").setup({
         provider = "openai_compatible",
@@ -163,7 +164,7 @@ return {
           },
         },
         chat = {
-          adapter = "MiniMax",
+          adapter = copilot,
           roles = {
             llm = function(adapter)
               local name = (adapter and adapter.formatted_name) or "AI"
@@ -272,7 +273,7 @@ When reading project files:
           },
         },
         inline = {
-          adapter = "MiMo",
+          adapter = "copilot",
           keymaps = {
             accept_change = { modes = { n = "gda" }, description = "Accept Diff" },
             reject_change = { modes = { n = "gdr" }, description = "Reject Diff" },
