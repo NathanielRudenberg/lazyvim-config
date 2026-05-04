@@ -12,7 +12,7 @@ vim.o.shiftwidth = 4
 
 vim.g.vimtex_compiler_out_dir = "./build"
 
-vim.o.wrap = true
+vim.o.wrap = false
 
 -- Use Intelephense instead of Phpactor
 vim.g.lazyvim_php_lsp = "intelephense"
