@@ -1,6 +1,19 @@
 return {
   "yetone/avante.nvim",
+  enabled = function()
+    -- Only load this plugin if the LazyVim avante extra is present in lazyvim.json
+    local config_path = vim.fn.stdpath("config") .. "/lazyvim.json"
+    if vim.fn.filereadable(config_path) == 1 then
+      local lazyvim_json = vim.fn.json_decode(vim.fn.readfile(config_path))
+      local extras = lazyvim_json.extras or {}
+      return vim.tbl_contains(extras, "lazyvim.plugins.extras.ai.avante")
+    end
+    return false
+  end,
   opts = {
+    input = {
+      provider = "snacks", -- or dressing
+    },
     provider = "claude",
     providers = {
       claude = {
