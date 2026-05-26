@@ -30,3 +30,7 @@ map("v", "<C-/>", "gc", { remap = true, desc = "Toggle Comment Selection" })
 -- I guess some terminals send <C-_> when pressing <C-/>
 map("n", "<C-_>", "gcc", { remap = true, desc = "Toggle Comment Line" })
 map("v", "<C-_>", "gc", { remap = true, desc = "Toggle Comment Selection" })
+
+-- Move buffer tabs
+vim.keymap.set("n", "<leader>b<", "<cmd>BufferLineMovePrev<cr>", { desc = "Move Buffer Left" })
+vim.keymap.set("n", "<leader>b>", "<cmd>BufferLineMoveNext<cr>", { desc = "Move Buffer Right" })
